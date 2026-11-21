@@ -1,3 +1,4 @@
+ 
 name: Deploy Demo to AWS EC2
 
 on:
@@ -17,7 +18,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::577500259878:role/GitHubActions-ShopEase-Deploy-Role
+          role-to-assume: arn:aws:iam::577500259878:role/ShopEase-GitHub-SSM-Deploy-Policy
           aws-region: us-east-1
 
       - name: Send demo deployment command
@@ -58,3 +59,4 @@ jobs:
 
           echo "SSM command timed out"
           exit 1
+
