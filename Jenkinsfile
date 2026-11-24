@@ -33,6 +33,21 @@ stage('Deploy') {
         '''
     }
 }
+        stage('Secret Text Test') {
+    steps {
+        withCredentials([
+            string(
+                credentialsId: 'shopeaseapitoken',
+                variable: 'API_TOKEN'
+            )
+        ]) {
+            sh '''
+                echo "Secret Text credential loaded successfully"
+                echo "API Token is available securely"
+            '''
+        }
+    }
+}
         stage('Credentials Test') {
     steps {
         withCredentials([
