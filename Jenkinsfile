@@ -21,18 +21,18 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh '''
-                    echo "Deploying ShopEase website to Nginx..."
+       stage('Deploy') {
+    steps {
+        sh '''
+            echo "Deploying ShopEase website to Nginx..."
 
-                    sudo cp "$WORKSPACE/index.html" /var/www/html/
-                    sudo cp "$WORKSPACE/styles.css" /var/www/html/
+            cp "$WORKSPACE/index.html" /var/www/html/
+            cp "$WORKSPACE/styles.css" /var/www/html/
 
-                    echo "ShopEase deployment completed!"
-                '''
-            }
-        }
+            echo "ShopEase deployment completed!"
+        '''
+    }
+}
     }
 
     post {
