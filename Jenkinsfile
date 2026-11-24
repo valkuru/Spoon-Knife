@@ -37,7 +37,7 @@ stage('Deploy') {
     steps {
         withCredentials([
             usernamePassword(
-                credentialsId: 'my-first-credential',
+                credentialsId: 'demo-credentials',
                 usernameVariable: 'MY_USER',
                 passwordVariable: 'MY_PASSWORD'
             )
