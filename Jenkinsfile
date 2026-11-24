@@ -33,6 +33,23 @@ stage('Deploy') {
         '''
     }
 }
+        stage('Credentials Test') {
+    steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'my-first-credential',
+                usernameVariable: 'MY_USER',
+                passwordVariable: 'MY_PASSWORD'
+            )
+        ]) {
+            sh '''
+                echo "Credentials loaded successfully"
+                echo "Username: $MY_USER"
+                echo "Password is protected"
+            '''
+        }
+    }
+}
     }
 
     post {
