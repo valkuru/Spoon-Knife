@@ -2,22 +2,32 @@
 pipeline {
     agent any
 
+    tools {
+        // Configured in Jenkins Global Tool Configuration
+        // SonarScanner installation name
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
+                echo 'Source code checked out from GitHub'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building ShopEase application...'
+                echo 'Building ShopEase application'
+                sh 'test -f index.html'
+                sh 'test -f Dockerfile'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing ShopEase application...'
+                echo 'Running basic application tests'
+                sh 'test -s index.html'
+                sh 'grep -qi "<html" index.html'
+                echo 'Basic tests passed'
             }
         }
 
@@ -39,15 +49,33 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Docker Build') {
             steps {
                 sh '''
-                    echo "Deploying ShopEase website to Nginx..."
+                    docker build -t shopease:latest .
+                '''
+            }
+        }
 
-                    cp "$WORKSPACE/index.html" /var/www/html/
-                    cp "$WORKSPACE/styles.css" /var/www/html/
+        stage('Docker Deploy') {
+            steps {
+                sh '''
+                    docker rm -f shopease-e2e || true
 
-                    echo "ShopEase deployment completed!"
+                    docker run -d \
+                      --name shopease-e2e \
+                      --restart unless-stopped \
+                      -p 8082:80 \
+                      shopease:latest
+                '''
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh '''
+                    sleep 5
+                    curl --fail http://localhost:8082/
                 '''
             }
         }
@@ -55,13 +83,11 @@ pipeline {
 
     post {
         success {
-            echo 'CI/CD Pipeline completed successfully!'
+            echo 'ShopEase End-to-End CI/CD completed successfully!'
         }
-
         failure {
-            echo 'CI/CD Pipeline failed!'
+            echo 'ShopEase CI/CD pipeline failed!'
         }
-
         always {
             echo 'Pipeline execution finished.'
         }
