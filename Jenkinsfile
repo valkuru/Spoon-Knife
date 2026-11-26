@@ -26,7 +26,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarScanner'
 
-                    withSonarQubeEnv('SonarQube-Server') {
+                    withSonarQubeEnv('SonarQubeServer') {
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=ShopEase \
