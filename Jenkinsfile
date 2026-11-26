@@ -2,11 +2,6 @@
 pipeline {
     agent any
 
-    tools {
-        // Configured in Jenkins Global Tool Configuration
-        // SonarScanner installation name
-    }
-
     stages {
         stage('Checkout') {
             steps {
