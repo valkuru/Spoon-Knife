@@ -20,19 +20,37 @@ pipeline {
                 echo 'Testing ShopEase application...'
             }
         }
-        
-stage('Deploy') {
-    steps {
-        sh '''
-            echo "Deploying ShopEase website to Nginx..."
 
-            cp "$WORKSPACE/index.html" /var/www/html/
-            cp "$WORKSPACE/styles.css" /var/www/html/
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarScanner'
 
-            echo "ShopEase deployment completed!"
-        '''
-    }
-}
+                    withSonarQubeEnv('SonarQube-Server') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=ShopEase \
+                            -Dsonar.projectName=ShopEase \
+                            -Dsonar.sources=. \
+                            -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    echo "Deploying ShopEase website to Nginx..."
+
+                    cp "$WORKSPACE/index.html" /var/www/html/
+                    cp "$WORKSPACE/styles.css" /var/www/html/
+
+                    echo "ShopEase deployment completed!"
+                '''
+            }
+        }
     }
 
     post {
